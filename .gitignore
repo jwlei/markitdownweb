@@ -166,3 +166,6 @@ cython_debug/
 src/.DS_Store
 .DS_Store
 .cursorrules
+
+# GitHub Pages build output (web/build.py)
+/_site/

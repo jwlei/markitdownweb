@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MarkItDown Web: Convert PDF, Word, Excel &amp; PowerPoint to Markdown</title>
+  <meta name="description" content="Free, private file-to-Markdown converter that runs entirely in your browser. Convert PDF, DOCX, PPTX, XLSX, EPUB, HTML, CSV and more to clean Markdown for LLMs. Your files never leave your device.">
+  <meta name="keywords" content="markdown converter, pdf to markdown, docx to markdown, word to markdown, pptx to markdown, excel to markdown, markitdown, llm, rag, browser, offline">
+  <meta name="author" content="jwlei">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="canonical" href="https://jwlei.github.io/markitdownweb/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MarkItDown Web">
+  <meta property="og:title" content="MarkItDown Web: Convert documents to Markdown in your browser">
+  <meta property="og:description" content="Convert PDF, Word, PowerPoint, Excel, EPUB, HTML and more to Markdown. Runs locally in your browser. Nothing is uploaded.">
+  <meta property="og:url" content="https://jwlei.github.io/markitdownweb/">
+  <meta property="og:image" content="https://jwlei.github.io/markitdownweb/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MarkItDown Web: documents to Markdown, privately in your browser">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MarkItDown Web: Convert documents to Markdown in your browser">
+  <meta name="twitter:description" content="PDF, Word, PowerPoint, Excel, EPUB, HTML and more to Markdown. Runs locally. Nothing is uploaded.">
+  <meta name="twitter:image" content="https://jwlei.github.io/markitdownweb/og.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MarkItDown Web",
+    "url": "https://jwlei.github.io/markitdownweb/",
+    "description": "Convert PDF, Word, PowerPoint, Excel, EPUB, HTML, CSV, JSON and other files to Markdown entirely in the browser using Microsoft's MarkItDown and Pyodide.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any (modern web browser)",
+    "browserRequirements": "Requires JavaScript and WebAssembly",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Are my files uploaded anywhere?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. MarkItDown runs inside your browser using WebAssembly. Files are read locally and never sent to a server." }
+      },
+      {
+        "@type": "Question",
+        "name": "Which file formats can I convert to Markdown?",
+        "acceptedAnswer": { "@type": "Answer", "text": "PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx and .xls), Outlook messages (.msg), EPUB, HTML, CSV, JSON, XML, RSS/Atom feeds, Jupyter notebooks (.ipynb), plain text, and ZIP archives containing any of these." }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is the first conversion slow?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The first visit downloads a Python runtime and the conversion libraries (about 30 MB). Your browser caches them, so later visits start much faster." }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f7fb;
+      --surface: #ffffff;
+      --surface-2: #f0f0f6;
+      --text: #16161d;
+      --muted: #5b5b6b;
+      --border: #dcdce6;
+      --accent: #4f46e5;
+      --accent-text: #ffffff;
+      --accent-soft: #eef0ff;
+      --ok: #15803d;
+      --err: #b91c1c;
+      --radius: 12px;
+      --mono: ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f0f14;
+        --surface: #17171f;
+        --surface-2: #20202a;
+        --text: #ececf3;
+        --muted: #a0a0b2;
+        --border: #2e2e3a;
+        --accent: #8b85ff;
+        --accent-text: #0f0f14;
+        --accent-soft: #1f1d3d;
+        --ok: #4ade80;
+        --err: #f87171;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    a { color: var(--accent); }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+
+    header.top { border-bottom: 1px solid var(--border); background: var(--surface); }
+    header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 56px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 650; color: var(--text); text-decoration: none; }
+    .brand img { width: 28px; height: 28px; }
+    .gh { color: var(--muted); font-size: 14px; text-decoration: none; }
+    .gh:hover { color: var(--text); }
+
+    .hero { padding: 40px 0 24px; }
+    h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.15; margin: 0 0 12px; letter-spacing: -0.02em; }
+    .lede { color: var(--muted); font-size: 18px; margin: 0; max-width: 62ch; }
+
+    #status {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin: 20px 0 0; padding: 6px 12px; border-radius: 999px;
+      background: var(--surface-2); color: var(--muted); font-size: 14px;
+    }
+    #status::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%;
+      background: currentColor; animation: pulse 1.2s ease-in-out infinite;
+    }
+    #status.ready { color: var(--ok); }
+    #status.ready::before, #status.failed::before { animation: none; }
+    #status.failed { color: var(--err); }
+    @keyframes pulse { 50% { opacity: 0.3; } }
+    @media (prefers-reduced-motion: reduce) { #status::before { animation: none; } }
+
+    #drop {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+      margin: 24px 0; padding: 40px 16px; min-height: 200px; text-align: center;
+      border: 2px dashed var(--border); border-radius: var(--radius); background: var(--surface);
+      cursor: pointer; transition: border-color .15s, background .15s;
+    }
+    #drop:hover, #drop:focus-visible, #drop.over { border-color: var(--accent); background: var(--accent-soft); outline: none; }
+    #drop strong { font-size: 18px; }
+    #drop span { color: var(--muted); font-size: 14px; }
+    #file { display: none; }
+
+    #results { display: grid; gap: 16px; margin-bottom: 40px; }
+    .result { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .result-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .result-name { font-weight: 600; overflow-wrap: anywhere; flex: 1 1 200px; }
+    .result-meta { color: var(--muted); font-size: 13px; }
+    .result-meta.err { color: var(--err); }
+    .actions { display: flex; gap: 8px; }
+    button {
+      font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+    }
+    button:hover { border-color: var(--accent); }
+    button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+    button:disabled { opacity: .5; cursor: default; }
+    pre.output {
+      margin: 0; padding: 16px; max-height: 420px; overflow: auto;
+      font: 13px/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface);
+    }
+    .error-text { padding: 12px 16px; margin: 0; color: var(--err); font-size: 14px; overflow-wrap: anywhere; }
+
+    section.info { padding: 32px 0; border-top: 1px solid var(--border); }
+    section.info h2 { font-size: 22px; margin: 0 0 16px; }
+    .formats { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 0; margin: 0; list-style: none; }
+    .formats li { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+    .formats b { display: block; }
+    .formats small { color: var(--muted); }
+    .faq details { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
+    .faq summary { cursor: pointer; font-weight: 600; }
+    .faq p { color: var(--muted); margin: 8px 0 0; }
+
+    footer { border-top: 1px solid var(--border); padding: 24px 0 40px; color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="favicon.svg" alt="" width="28" height="28">MarkItDown Web</a>
+      <a class="gh" href="https://github.com/jwlei/markitdownweb">GitHub ↗</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Convert documents to Markdown, right in your browser</h1>
+      <p class="lede">Turn PDF, Word, PowerPoint, Excel, EPUB, HTML and more into clean Markdown ready for LLMs and RAG pipelines. Powered by Microsoft's MarkItDown running on WebAssembly, so your files never leave your device.</p>
+      <p id="status" role="status" aria-live="polite">Loading…</p>
+      <noscript><p class="error-text">MarkItDown Web needs JavaScript and WebAssembly to run.</p></noscript>
+    </section>
+
+    <label id="drop" tabindex="0" for="file">
+      <strong>Drop files here or click to choose</strong>
+      <span>PDF · DOCX · PPTX · XLSX · XLS · EPUB · HTML · CSV · JSON · XML · IPYNB · MSG · ZIP</span>
+      <input id="file" type="file" multiple
+        accept=".pdf,.docx,.pptx,.xlsx,.xls,.epub,.html,.htm,.csv,.json,.jsonl,.xml,.rss,.atom,.ipynb,.msg,.zip,.txt,.md">
+    </label>
+
+    <div id="results" aria-live="polite"></div>
+
+    <section class="info" id="formats">
+      <h2>Supported formats</h2>
+      <ul class="formats">
+        <li><b>PDF</b><small>Text, headings and tables</small></li>
+        <li><b>Word (.docx)</b><small>Headings, lists, tables, equations</small></li>
+        <li><b>PowerPoint (.pptx)</b><small>Slides, tables, speaker notes</small></li>
+        <li><b>Excel (.xlsx, .xls)</b><small>Every sheet as a Markdown table</small></li>
+        <li><b>EPUB</b><small>Metadata and chapters</small></li>
+        <li><b>HTML</b><small>Including Wikipedia and Bing pages</small></li>
+        <li><b>CSV, JSON, XML</b><small>Any text encoding</small></li>
+        <li><b>RSS &amp; Atom</b><small>Feed items as sections</small></li>
+        <li><b>Jupyter (.ipynb)</b><small>Markdown and code cells</small></li>
+        <li><b>Outlook (.msg)</b><small>Headers and body</small></li>
+        <li><b>ZIP archives</b><small>Converts each file inside</small></li>
+      </ul>
+    </section>
+
+    <section class="info faq" id="faq">
+      <h2>Questions</h2>
+      <details>
+        <summary>Are my files uploaded anywhere?</summary>
+        <p>No. MarkItDown runs inside your browser using WebAssembly (Pyodide). Files are read locally and never sent to a server.</p>
+      </details>
+      <details>
+        <summary>Why is the first conversion slow?</summary>
+        <p>The first visit downloads a Python runtime and the conversion libraries (about 30 MB). Your browser caches them, so later visits start much faster.</p>
+      </details>
+      <details>
+        <summary>What doesn't work in the browser?</summary>
+        <p>Features that need native tools or cloud services: image OCR and EXIF metadata, audio transcription, YouTube transcripts, and Azure Document Intelligence. Use the <a href="https://github.com/microsoft/markitdown">MarkItDown Python package</a> for those.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      Built on <a href="https://github.com/microsoft/markitdown">Microsoft MarkItDown</a> and <a href="https://pyodide.org">Pyodide</a>. MIT licensed. <span id="version"></span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
