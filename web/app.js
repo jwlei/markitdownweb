@@ -3,6 +3,10 @@
 const worker = new Worker("worker.js");
 const statusEl = document.getElementById("status");
 const versionEl = document.getElementById("version");
+const progressEl = document.getElementById("progress");
+const progressBar = document.getElementById("progress-bar");
+const progressFill = document.getElementById("progress-fill");
+const progressDetail = document.getElementById("progress-detail");
 const drop = document.getElementById("drop");
 const fileInput = document.getElementById("file");
 const results = document.getElementById("results");
@@ -13,6 +17,15 @@ let nextId = 0;
 function setStatus(text, state) {
   statusEl.textContent = text;
   statusEl.className = state || "";
+  progressEl.classList.toggle("idle", Boolean(state));
+}
+
+function setProgress(value, detail) {
+  const percent = Math.round(value * 100);
+  progressFill.style.width = `${percent}%`;
+  progressBar.setAttribute("aria-valuenow", percent);
+  progressBar.setAttribute("aria-valuetext", detail);
+  progressDetail.textContent = detail;
 }
 
 function el(tag, props = {}, children = []) {
@@ -98,6 +111,9 @@ worker.onmessage = ({ data }) => {
   switch (data.type) {
     case "status":
       setStatus(data.text);
+      break;
+    case "progress":
+      setProgress(data.value, data.detail);
       break;
     case "ready":
       setStatus("Ready: files are converted locally", "ready");

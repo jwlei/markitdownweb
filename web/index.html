@@ -115,7 +115,7 @@
     .gh { color: var(--muted); font-size: 14px; text-decoration: none; }
     .gh:hover { color: var(--text); }
 
-    .hero { padding: 40px 0 24px; }
+    .hero { padding: 40px 0 0; }
     h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.15; margin: 0 0 12px; letter-spacing: -0.02em; }
     .lede { color: var(--muted); font-size: 18px; margin: 0; max-width: 62ch; }
 
@@ -132,7 +132,14 @@
     #status.ready::before, #status.failed::before { animation: none; }
     #status.failed { color: var(--err); }
     @keyframes pulse { 50% { opacity: 0.3; } }
-    @media (prefers-reduced-motion: reduce) { #status::before { animation: none; } }
+    @media (prefers-reduced-motion: reduce) { #status::before { animation: none; } #progress-fill { transition: none; } }
+
+    /* Hidden with visibility so the page doesn't jump when loading finishes. */
+    #progress { display: flex; align-items: center; gap: 12px; max-width: 520px; min-height: 20px; margin-top: 12px; }
+    #progress.idle { visibility: hidden; }
+    #progress-bar { flex: 1 1 80px; height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+    #progress-fill { width: 0; height: 100%; background: var(--accent); transition: width .3s ease-out; }
+    #progress-detail { flex: 0 0 14em; color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     #drop {
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
@@ -191,6 +198,10 @@
       <h1>Convert documents to Markdown, right in your browser</h1>
       <p class="lede">Turn PDF, Word, PowerPoint, Excel, EPUB, HTML and more into clean Markdown ready for LLMs and RAG pipelines. Powered by MarkItDown running on WebAssembly, so your files never leave your device.</p>
       <p id="status" role="status" aria-live="polite">Loading…</p>
+      <div id="progress" class="idle">
+        <div id="progress-bar" role="progressbar" aria-label="Loading dependencies" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-fill"></div></div>
+        <span id="progress-detail"></span>
+      </div>
       <noscript><p class="error-text">MarkItDown Web needs JavaScript and WebAssembly to run.</p></noscript>
     </section>
 
