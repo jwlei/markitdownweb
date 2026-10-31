@@ -7,7 +7,7 @@
 
 👉 **[jwlei.github.io/markitdownweb](https://jwlei.github.io/markitdownweb/)**
 
-MarkItDown Web runs Microsoft's [MarkItDown](https://github.com/microsoft/markitdown) entirely client-side with [Pyodide](https://pyodide.org) (CPython compiled to WebAssembly). There's no server, so files are read locally and never uploaded. The output is clean Markdown ready for LLMs, RAG pipelines and text analysis.
+MarkItDown Web runs [MarkItDown](packages/markitdown) entirely client-side with [Pyodide](https://pyodide.org) (CPython compiled to WebAssembly). There's no server, so files are read locally and never uploaded. The output is clean Markdown ready for LLMs, RAG pipelines and text analysis.
 
 ![MarkItDown Web](web/og.png)
 
@@ -28,13 +28,13 @@ MarkItDown Web runs Microsoft's [MarkItDown](https://github.com/microsoft/markit
 | Excel `.xlsx`, `.xls` | Each sheet as a Markdown table |
 | Outlook `.msg` | Headers and body |
 | EPUB | Metadata and chapters |
-| HTML | Including Wikipedia and Bing SERP pages |
+| HTML | Including Wikipedia pages |
 | CSV, JSON, XML, text | Encoding is auto-detected |
 | RSS / Atom | Feed items as sections |
 | Jupyter `.ipynb` | Markdown and code cells |
 | ZIP | Converts every supported file inside |
 
-**Not available in the browser:** image OCR and EXIF metadata (requires `exiftool`), audio transcription, YouTube transcripts, and Azure Document Intelligence / Content Understanding. Use the [Python package](packages/markitdown/README.md) for those.
+**Not available in the browser:** image OCR and EXIF metadata (requires `exiftool`), audio transcription, YouTube transcripts, and cloud document analysis. Use the [Python package](packages/markitdown/README.md) for those.
 
 ## How it works
 
@@ -89,4 +89,4 @@ packages/markitdown/    The MarkItDown Python library (from upstream)
 
 ## Credits and license
 
-Built on [microsoft/markitdown](https://github.com/microsoft/markitdown) and [Pyodide](https://pyodide.org). MIT licensed; see [LICENSE](LICENSE). MarkItDown is © Microsoft Corporation.
+Built on the open source [MarkItDown](packages/markitdown) library and [Pyodide](https://pyodide.org). MIT licensed; see [LICENSE](LICENSE) and [third-party notices](packages/markitdown/ThirdPartyNotices.md), which carry the original copyright notices.

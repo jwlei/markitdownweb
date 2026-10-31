@@ -28,6 +28,12 @@ STATIC_FILES = [
     "sitemap.xml",
 ]
 
+# The wheel doesn't bundle these, and the licenses require shipping them.
+LICENSE_FILES = {
+    ROOT / "LICENSE": "LICENSE.txt",
+    ROOT / "packages" / "markitdown" / "ThirdPartyNotices.md": "ThirdPartyNotices.txt",
+}
+
 
 def main() -> None:
     shutil.rmtree(OUT, ignore_errors=True)
@@ -50,6 +56,8 @@ def main() -> None:
 
     for name in STATIC_FILES:
         shutil.copy2(WEB / name, OUT / name)
+    for source, name in LICENSE_FILES.items():
+        shutil.copy2(source, OUT / name)
     (OUT / "wheel.json").write_text(json.dumps({"wheel": f"wheels/{wheel.name}"}))
 
     print(f"Built {OUT} with {wheel.name}")

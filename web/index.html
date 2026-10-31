@@ -32,7 +32,7 @@
     "@type": "WebApplication",
     "name": "MarkItDown Web",
     "url": "https://jwlei.github.io/markitdownweb/",
-    "description": "Convert PDF, Word, PowerPoint, Excel, EPUB, HTML, CSV, JSON and other files to Markdown entirely in the browser using Microsoft's MarkItDown and Pyodide.",
+    "description": "Convert PDF, Word, PowerPoint, Excel, EPUB, HTML, CSV, JSON and other files to Markdown entirely in the browser using MarkItDown and Pyodide.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Any (modern web browser)",
     "browserRequirements": "Requires JavaScript and WebAssembly",
@@ -189,7 +189,7 @@
   <main class="wrap">
     <section class="hero">
       <h1>Convert documents to Markdown, right in your browser</h1>
-      <p class="lede">Turn PDF, Word, PowerPoint, Excel, EPUB, HTML and more into clean Markdown ready for LLMs and RAG pipelines. Powered by Microsoft's MarkItDown running on WebAssembly, so your files never leave your device.</p>
+      <p class="lede">Turn PDF, Word, PowerPoint, Excel, EPUB, HTML and more into clean Markdown ready for LLMs and RAG pipelines. Powered by MarkItDown running on WebAssembly, so your files never leave your device.</p>
       <p id="status" role="status" aria-live="polite">Loading…</p>
       <noscript><p class="error-text">MarkItDown Web needs JavaScript and WebAssembly to run.</p></noscript>
     </section>
@@ -211,7 +211,7 @@
         <li><b>PowerPoint (.pptx)</b><small>Slides, tables, speaker notes</small></li>
         <li><b>Excel (.xlsx, .xls)</b><small>Every sheet as a Markdown table</small></li>
         <li><b>EPUB</b><small>Metadata and chapters</small></li>
-        <li><b>HTML</b><small>Including Wikipedia and Bing pages</small></li>
+        <li><b>HTML</b><small>Including Wikipedia pages</small></li>
         <li><b>CSV, JSON, XML</b><small>Any text encoding</small></li>
         <li><b>RSS &amp; Atom</b><small>Feed items as sections</small></li>
         <li><b>Jupyter (.ipynb)</b><small>Markdown and code cells</small></li>
@@ -232,14 +232,14 @@
       </details>
       <details>
         <summary>What doesn't work in the browser?</summary>
-        <p>Features that need native tools or cloud services: image OCR and EXIF metadata, audio transcription, YouTube transcripts, and Azure Document Intelligence. Use the <a href="https://github.com/microsoft/markitdown">MarkItDown Python package</a> for those.</p>
+        <p>Features that need native tools or cloud services: image OCR and EXIF metadata, audio transcription, YouTube transcripts, and cloud document analysis. Use the <a href="https://github.com/jwlei/markitdownweb/tree/main/packages/markitdown">MarkItDown Python package</a> for those.</p>
       </details>
     </section>
   </main>
 
   <footer>
     <div class="wrap">
-      Built on <a href="https://github.com/microsoft/markitdown">Microsoft MarkItDown</a> and <a href="https://pyodide.org">Pyodide</a>. MIT licensed. <span id="version"></span>
+      Built on <a href="https://github.com/jwlei/markitdownweb/tree/main/packages/markitdown">MarkItDown</a> and <a href="https://pyodide.org">Pyodide</a>. <a href="LICENSE.txt">MIT licensed</a>, with <a href="ThirdPartyNotices.txt">third-party notices</a>. <span id="version"></span>
     </div>
   </footer>
 
