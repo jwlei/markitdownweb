@@ -34,6 +34,22 @@ function download(name, text) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+// navigator.clipboard only exists on HTTPS, and the site is also served over HTTP.
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const area = el("textarea", { value: text });
+    area.style.position = "fixed";
+    document.body.append(area);
+    area.select();
+    const copied = document.execCommand("copy");
+    area.remove();
+    return copied;
+  }
+}
+
 function createCard(file) {
   const meta = el("span", { className: "result-meta", textContent: "Converting…" });
   const copyBtn = el("button", { type: "button", textContent: "Copy", disabled: true });
@@ -54,8 +70,7 @@ function createCard(file) {
       card.append(el("pre", { className: "output", textContent: markdown || "(no text content found)" }));
       copyBtn.disabled = saveBtn.disabled = !markdown;
       copyBtn.addEventListener("click", async () => {
-        await navigator.clipboard.writeText(markdown);
-        copyBtn.textContent = "Copied";
+        copyBtn.textContent = (await copyText(markdown)) ? "Copied" : "Copy failed";
         setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
       });
       saveBtn.addEventListener("click", () => download(markdownName(file.name), markdown));
